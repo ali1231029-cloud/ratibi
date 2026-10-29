@@ -47,7 +47,7 @@ export default function Reports() {
   async function exportJson() {
     await run(async () => {
       const b = await createBackup();
-      downloadText(`ratibi-backup-${today}.json`, JSON.stringify(b, null, 2), 'application/json');
+      await downloadText(`ratibi-backup-${today}.json`, JSON.stringify(b, null, 2), 'application/json');
       await updateSettings({ lastBackupAt: new Date().toISOString() });
     }, 'تم تصدير نسخة JSON كاملة');
   }
@@ -57,7 +57,7 @@ export default function Reports() {
       <div className="page-head">
         <div><h1>التقارير والتحليلات</h1><div className="sub">{formatDate(range[0])} — {formatDate(range[1])}</div></div>
         <div className="row">
-          <button className="btn sm" onClick={() => downloadText(`ratibi-transactions-${today}.csv`, transactionsCsv(data), 'text/csv;charset=utf-8')}>تصدير CSV / Excel</button>
+          <button className="btn sm" onClick={() => void run(() => downloadText(`ratibi-transactions-${today}.csv`, transactionsCsv(data), 'text/csv;charset=utf-8'))}>تصدير CSV / Excel</button>
           <button className="btn sm" onClick={exportJson}>تصدير JSON</button>
         </div>
       </div>

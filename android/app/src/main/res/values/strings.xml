@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">راتبي</string>
+    <string name="title_activity_main">راتبي</string>
+    <string name="package_name">com.ali1231029.ratibi</string>
+    <string name="custom_url_scheme">com.ali1231029.ratibi</string>
+</resources>

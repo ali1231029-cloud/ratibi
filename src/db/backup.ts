@@ -2,6 +2,9 @@
 // file first, keeps an automatic snapshot of the current data, and never duplicates a record:
 // records are matched by their permanent id.
 
+import { Capacitor } from '@capacitor/core';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 import { db } from './db';
 import { AppError, loadAll } from './repo';
 import { isISODate } from '../lib/dates';
@@ -224,7 +227,17 @@ export function transactionsCsv(data: AppData): string {
   return '﻿' + [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n');
 }
 
-export function downloadText(filename: string, text: string, mime: string): void {
+/**
+ * Saves a text file. In the browser it downloads; in the Android app (where downloads are not
+ * available) it writes the file to the app cache and opens the share sheet, so the user can save
+ * it to Drive, Files or send it to themselves.
+ */
+export async function downloadText(filename: string, text: string, mime: string): Promise<void> {
+  if (Capacitor.isNativePlatform()) {
+    const written = await Filesystem.writeFile({ path: filename, data: text, directory: Directory.Cache, encoding: Encoding.UTF8 });
+    await Share.share({ title: filename, files: [written.uri] });
+    return;
+  }
   const blob = new Blob([text], { type: mime });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

@@ -2,6 +2,7 @@ import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { registerSW } from 'virtual:pwa-register';
+import { Capacitor } from '@capacitor/core';
 import './styles.css';
 import { AppProvider, useApp } from './hooks/useApp';
 import { ConfirmProvider, ToastProvider } from './components/ui';
@@ -80,7 +81,8 @@ const loadError = (e: unknown) => (
 );
 
 void requestPersistentStorage();
-if (import.meta.env.PROD) registerSW({ immediate: true });
+// The Android app ships its files inside the APK, so it needs no service worker cache.
+if (import.meta.env.PROD && !Capacitor.isNativePlatform()) registerSW({ immediate: true });
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

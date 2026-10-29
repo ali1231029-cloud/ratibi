@@ -165,7 +165,7 @@ function BackupSection() {
   async function exportJson() {
     await run(async () => {
       const b = await createBackup();
-      downloadText(`ratibi-backup-${today}.json`, JSON.stringify(b, null, 2), 'application/json');
+      await downloadText(`ratibi-backup-${today}.json`, JSON.stringify(b, null, 2), 'application/json');
       await updateSettings({ lastBackupAt: new Date().toISOString() });
     }, 'تم إنشاء النسخة الاحتياطية وتنزيلها');
   }
@@ -211,7 +211,7 @@ function BackupSection() {
       </div>
       <div className="btn-row mt">
         <button className="btn primary" disabled={busy} onClick={exportJson}>إنشاء نسخة احتياطية كاملة (JSON)</button>
-        <button className="btn" onClick={() => downloadText(`ratibi-transactions-${today}.csv`, transactionsCsv(data), 'text/csv;charset=utf-8')}>تصدير العمليات CSV / Excel</button>
+        <button className="btn" disabled={busy} onClick={() => void run(() => downloadText(`ratibi-transactions-${today}.csv`, transactionsCsv(data), 'text/csv;charset=utf-8'))}>تصدير العمليات CSV / Excel</button>
       </div>
 
       <hr className="sep" />
